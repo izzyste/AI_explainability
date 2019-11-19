@@ -1,3 +1,7 @@
+## Visualization based Explanations
+
+The code cna be found in the src folder in run_model.ipynb 
+
 # Face classification and detection.
 Real-time face detection and emotion/gender classification using fer2013/IMDB datasets with a keras CNN model and openCV.
 * IMDB gender classification test accuracy: 96%.
