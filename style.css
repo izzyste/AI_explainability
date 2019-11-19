@@ -5,6 +5,7 @@ body{
     font-weight:300;
     /* cursor: url('cursor.gif'),auto; */
     cursor: url('cursor.gif'),pointer;
+    min-width: 600px;
     /* cursor: url('cursor.gif'),auto; */
 }
 
