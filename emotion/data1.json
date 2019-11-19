@@ -1,0 +1,52 @@
+{
+    "children": [
+        {
+            "name": "boss1",
+            "children": [
+                {
+                    "name": "Angry",
+                    "color": "#CAB211",
+                    "value": 0.1,
+                    "colname": "level3"
+                },
+                {
+                    "name": "Disgust",
+                    "color": "#C84439",
+                    "value": 0.12,
+                    "colname": "level3"
+                },
+                {
+                    "name": "Fear",
+                    "color": "#B16712",
+                    "value": 0.03,
+                    "colname": "level3"
+                },
+                {
+                    "name": "Happy",
+                    "color": "#DE961F",
+                    "value": 0.35,
+                    "colname": "level3"
+                },
+                {
+                    "name": "Sad",
+                    "color": "#3E58B8",
+                    "value": 0.02,
+                    "colname": "level3"
+                },
+                {
+                    "name": "Surprise",
+                    "color": "#33B189",
+                    "value":  0.18,
+                    "colname": "level3"
+                },
+                {
+                    "name": "Neutral",
+                    "color": "#3E86B8",
+                    "value": 0.3,
+                    "colname": "level3"
+                }
+
+            ]
+        }
+    ]
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:300,400,500,600,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="sketch.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="cover">
+        <ul class = "nav">
+            <li id = 'genderVis'><a href="#gender">Gender Recognition</a></li>
+            <li id = 'emotionVis'><a href="emotion/index.html">Emotion Recognition</a></li>
+            <li id = 'mapVis'><a href="tSNE/index.html">tSNE Decision Map</a></li>
+        </ul>
+        
+            <h3 id ="subtitle" >Explaining Facial Reconition </h3> 
+            <div class="type-wrap">
+            <h1 id = "title">How does AI distinguish <br />
+                <sapn id ="typed"></sapn>?</h1>
+
+            </div>
+        
+            <h5 id = "scrollSign"> SCROLL TO EXPLORE </h5>
+        
+            <svg id= "scrollLine">
+                <line x1="150" y1="0" x2="150" y2="70" style="stroke:rgb(255,255,255);stroke-width:1" />
+            </svg>
+    </div>
+
+    <div class ="section">
+        <h2 class = "title2"> <sapn id ="typed2">Pretend that you are an AI system,is this person a <span class ="man">Man</span> or <span class = 'woman'>Woman</span>? </sapn></h2>
+   
+        <div id = 'p5js'></div>
+        <div id= "buttonSection">
+            <div class = "button" onclick ="selection('woman',this)" onmouseover="buttonHover('woman',this)" onmouseout="buttonNormal(this)"><h5>Woman</h5></div>
+            <div class = "button" onclick ="selection('man',this)" onmouseover="buttonHover('man',this)" onmouseout="buttonNormal(this)"><h5>Man</h5></div>
+        </div>
+
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.10"></script>
+<script>
+    var options = {
+        strings: ['<span class ="man">Man</span> vs. <span class = "woman">Woman</span>','<span class ="man">Happy</span> vs. <span class = "woman">Sad</span>'],
+        typeSpeed: 50,
+        backSpeed: 30,
+        loop: true,
+        }
+    var typed = new Typed("#typed", options);
+</script>
+
+</html>
