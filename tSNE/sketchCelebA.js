@@ -9,12 +9,22 @@ let cHeight = (cWidth/xRows)*yRows
 let datasetSize = 1000
 let xMarg = 5;
 let yMarg = 5;
+let scaleFactor;
 
 let picScale = cWidth/xRows
 
 let femaleNums = [1, 4, 345, 688, 29, 234, 889, 657, 104, 10, 40, 245, 678, 39, 244, 829, 757, 114];
 let selected;
-let okToDrawWinner = false;
+let scaleSlider;
+let scaleSliderY, scaleSliderX, scaleSliderW;
+
+let parentDiv, parentDivRect;
+
+let tx = 0;
+let ty = 0;
+let prevPosition = [0,0]
+
+let outlineColor;
 
 function preload() {
 	cloudLocations = loadJSON('assets/cloudLocationsCelebA.json');
@@ -26,14 +36,27 @@ function setup() {
 	var canvas = createCanvas(cWidth, cHeight);
 	canvas.parent('tSNEp5');
 
+	parentDiv = document.getElementById("tSNEp5");
+	parentDivRect = tSNEp5.getBoundingClientRect()
+
 	colorMode(HSL, 100)
 	textFont(sourceCode)
 	textAlign(LEFT, TOP)
+	outlineColor = color(5, 98, 50)
 
 	tSNEmode = "grid"
 	selected = "female"
 
 	getImages();
+
+	scaleSlider = createSlider(1, 3, 1)
+	scaleSliderX = cWidth/2
+	scaleSliderY = parentDivRect.top + parentDiv.clientHeight - yMarg*2
+	scaleSliderW = 120;
+	scaleSlider.position(scaleSliderX, scaleSliderY)
+	scaleSlider.style('width', 'scaleSliderW')
+	scaleSlider.parent('tSNEp5')
+
 }
 
 function getImages(){
@@ -50,7 +73,6 @@ function getImages(){
 		else if (tSNEmode == "grid") {
 			x = gridLocations.get(i, 0)
 			y = gridLocations.get(i, 1)
-			console.log([x, y])
 			x = map(x, 0, xRows, 0, width)
 			y = map(y, 0, yRows, 0, height)
 		}
@@ -91,9 +113,14 @@ function draw() {
 	closestDistance = 10000
 	winner = []
 
+	push();
+	scaleFactor = scaleSlider.value()
+	scale(scaleFactor)
+
+	// translate(tx, ty)
+
 	for (let i = 0; i < tSNEimages.length; i++){
 		let curr = tSNEimages[i]
-		//console.log("curr = " + str(curr))
 		let x = curr[0]
 		let y = curr[1]
 		let num = curr[2]
@@ -104,7 +131,7 @@ function draw() {
 		image(img, x, y, w, h)
 
 	    // calculate distance from the mouse
-	    let currDistance = distance(mouseX, mouseY, x + w/2, y + h/2)
+	    let currDistance = distance((mouseX - tx)/scaleFactor, (mouseY - ty)/scaleFactor, x + w/2, y + h/2)
 	    //console.log(["at i = ", i, " distance = ", currDistance])
 	    if (currDistance < closestDistance){
 	    	closestDistance = currDistance
@@ -121,7 +148,19 @@ function draw() {
 	    	rect(x, y, w, h)
 	    }
 	}
-	drawWinner(winner)
+	if (winner[2] != undefined){
+		drawWinner(winner)
+	}
+	pop();
+	drawSliderBg();
+}
+
+// draw rectangle around slider
+function drawSliderBg(){
+	noStroke();
+	fill(100);
+	console.log(scaleSliderX, scaleSliderY, scaleSliderW)
+	rect(scaleSliderX, scaleSliderY, scaleSliderW, 40)
 }
 
 // draw tooltip for closest image to mouse
@@ -130,18 +169,20 @@ function drawWinner(winner){
 	let y = winner[1]
 	let num = winner[2]
 	let img = winner[3]
-	let w = winner[3].width/2
-	let h = winner[3].height/2
+	let w = winner[3].width/scaleFactor/1.5
+	let h = winner[3].height/scaleFactor/1.5
 	let isFemale = winner[4]
 	let winnerXOffset = picScale
 	let winnerYOffset = picScale
 	let textboxY = y + h + winnerYOffset
 
+	// outline for main (smaller) img
 	noFill();
-	stroke(5, 98, 50)
-	strokeWeight(3)
-	rect(x, y, winnerXOffset, winnerYOffset) // for main (smaller) img
+	stroke(outlineColor)
+	strokeWeight(3/scaleFactor)
+	rect(x, y, winnerXOffset, winnerYOffset)
 
+	// decide which corner caption will be drawn from
 	let rectHeight = h + h/3
 	// bottom right
 	if (x <= cWidth - w && y <= cHeight - rectHeight){
@@ -167,16 +208,29 @@ function drawWinner(winner){
 }
 
 function drawCaption(x, y, w, h, num, isFemale){
+	// white rect
 	noStroke()
 	fill(100)
-	rect(x, y, w, h/3)
+	rect(x, y, w, h/2)
+	// text
 	fill(0)
-	text("Image #" + str(num), x + xMarg, y + yMarg)
-	text("Female = " + str(isFemale), x + xMarg, y + yMarg*5);
+	textSize(12/scaleFactor)
+	text("Image #" + str(num), x + xMarg/scaleFactor, y + yMarg/scaleFactor)
+	text("Female = " + str(isFemale), x + xMarg/scaleFactor, y + yMarg*5/scaleFactor);
 
 	// colorful outline
 	noFill();
-	stroke(5, 98, 50)
-	strokeWeight(3)
-	rect(x, y - h, w, 4*h/3) // for entire tooltip
+	strokeWeight(3/scaleFactor)
+	stroke(outlineColor)
+	rect(x, y - h, w, 3*h/2) // for entire tooltip
 }
+
+// function mouseDragged(){
+// 	tx = (mouseX - prevPosition[0]);
+// 	ty = (mouseY - prevPosition[1]);
+
+// 	console.log([tx, ty])
+// 	prevPosition[0] = tx
+// 	prevPosition[1] = ty
+	
+// }
