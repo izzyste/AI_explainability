@@ -17,8 +17,8 @@ let selected;
 let okToDrawWinner = false;
 
 function preload() {
-	cloudLocations = loadJSON('assets/cloudLocations.json');
-	gridLocations = loadTable('assets/gridLocations.csv');
+	cloudLocations = loadJSON('assets/cloudLocationsCelebA.json');
+	gridLocations = loadTable('assets/gridLocationsCelebA.csv');
 	sourceCode = loadFont("assets/SourceCodePro-Regular.ttf")
 }
 
@@ -48,9 +48,9 @@ function getImages(){
 			y = map(float(location.point[1]), 0, 1, 0, height)
 		}
 		else if (tSNEmode == "grid") {
-			let evilCSV = (gridLocations.get(i, 0)).split(";")
-			x = evilCSV[0]
-			y = evilCSV[1]
+			x = gridLocations.get(i, 0)
+			y = gridLocations.get(i, 1)
+			console.log([x, y])
 			x = map(x, 0, xRows, 0, width)
 			y = map(y, 0, yRows, 0, height)
 		}
@@ -62,7 +62,7 @@ function getImages(){
 	    let filename = location.path
 	    let num = int(filename.slice(0, 6))
 	    
-	    let path = "sample/" + str(filename)
+	    let path = "sampleCelebA/" + str(filename)
 	    let img = loadImage(path)
 
 	    // is this image on the females list?
