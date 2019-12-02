@@ -27,8 +27,8 @@ let prevPosition = [0,0]
 let outlineColor;
 
 function preload() {
-	cloudLocations = loadJSON('assets/cloudLocationsCelebA.json');
-	gridLocations = loadTable('assets/gridLocationsCelebA.csv');
+	cloudLocations = loadJSON('assets/cloudLocationsFinal.json');
+	gridLocations = loadTable('assets/gridLocationsFinal.csv');
 	sourceCode = loadFont("assets/SourceCodePro-Regular.ttf")
 }
 
@@ -51,8 +51,8 @@ function setup() {
 
 	scaleSlider = createSlider(1, 3, 1)
 	scaleSliderX = cWidth/2
-	scaleSliderY = parentDivRect.top + parentDiv.clientHeight - yMarg*2
-	scaleSliderW = 120;
+	scaleSliderY = 920
+	scaleSliderW = cWidth/10;
 	scaleSlider.position(scaleSliderX, scaleSliderY)
 	scaleSlider.style('width', 'scaleSliderW')
 	scaleSlider.parent('tSNEp5')
@@ -85,6 +85,7 @@ function getImages(){
 	    let num = int(filename.slice(0, 6))
 	    
 	    let path = "sampleFinal/" + str(filename)
+	    console.log(path)
 	    let img = loadImage(path)
 
 	    // is this image on the females list?
@@ -159,8 +160,7 @@ function draw() {
 function drawSliderBg(){
 	noStroke();
 	fill(100);
-	console.log(scaleSliderX, scaleSliderY, scaleSliderW)
-	rect(scaleSliderX, scaleSliderY, scaleSliderW, 40)
+	rect(scaleSliderX - 50, scaleSliderY - 375, scaleSliderW*1.5, 40)
 }
 
 // draw tooltip for closest image to mouse
