@@ -31,8 +31,38 @@ let outlineColor;
 function preload() {
 	cloudLocations = loadJSON('assets/cloudLocations.json');
 	gridLocations = loadTable('assets/gridLocations.csv');
+
 	sourceCode = loadFont("assets/SourceCodePro-Regular.ttf")
-	femalesTable = loadTable('assets/femalesList')
+
+	femalesTable = loadTable('assets/lists/femalesList')
+	angryTable = loadTable('assets/lists/angryList')
+	disgustTable = loadTable('assets/lists/disgustList')
+	fearTable = loadTable('assets/lists/fearList')
+	happyTable = loadTable('assets/lists/happyList')
+	sadTable = loadTable('assets/lists/sadList')
+	surpriseTable = loadTable('assets/lists/surpriseList')
+	neutralTable = loadTable('assets/lists/neutralList')
+}
+
+function formatList(lst){
+	for (let i = 0; i < lst.length; i++){
+		lst[i] = int(lst[i][0])
+	}
+}
+
+function setupTables(){
+	females = femalesTable.getArray();
+	angryList = angryTable.getArray();
+	disgustList = disgustTable.getArray();
+	fearList = fearTable.getArray();
+	happyList = happyTable.getArray();
+	sadList = sadTable.getArray();
+	surpriseList = surpriseTable.getArray();
+	neutralList = neutralTable.getArray();
+
+	for (lst of [females, angryList, disgustList, fearList, happyList, sadList, surpriseList, neutralList]){
+		formatList(lst)
+	}
 }
 
 function setup() {
@@ -49,12 +79,9 @@ function setup() {
 	outlineColor = color(5, 98, 50)
 
 	tSNEmode = "grid"
-	selected = "female"
-	females = femalesTable.getArray();
-	for (let i = 0; i < females.length; i++){
-		females[i] = int(females[i][0])
-	}
+	selected = "gender"
 
+	setupTables();
 	getImages();
 
 	scaleSlider = createSlider(1, 3, 1)
@@ -96,15 +123,21 @@ function getImages(){
 	    let path = "sample/" + str(filename)
 	    let img = loadImage(path)
 
-	    // is this image in the females object?
-	    if (females.includes(num)){
-	      	isFemale = true;
-	    }
-	    else{
-	    	isFemale = false;
-	    }
+	    let wholeImage = [x, y, num, img]
 
-	    tSNEimages.push([x, y, num, img, isFemale])
+	    // is this image in the females object?
+	    if (females.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+
+	    // 5. happy, 6. angry, 7. disgust, 8. fear, 9. sad, 10. surprised, 11. neutral
+	    if (happyList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+	    if (angryList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+	    if (disgustList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+	    if (fearList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+	    if (sadList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+	    if (surpriseList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+	    if (neutralList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+
+	    tSNEimages.push(wholeImage)
 	}
 }
 
@@ -135,6 +168,13 @@ function draw() {
 		let num = curr[2]
 		let img = curr[3]
 		let isFemale = curr[4]
+		let isHappy = curr[5]
+		let isAngry = curr[6]
+		let isDisgust = curr[7]
+		let isFear = curr[8]
+		let isSad = curr[9]
+		let isSurprise = curr[10]
+		let isNeutral = curr[11]
 		let w = picScale
 		let h = w
 		image(img, x, y, w, h)
@@ -151,11 +191,32 @@ function draw() {
 	    }
 
 	    // if in females list and mode is female, draw overlay
-	    if (isFemale && selected == "female") {
-	    	noStroke();
-	    	fill(13, 70, 70, 70)
-	    	rect(x, y, w, h)
-	    }
+	    noStroke();
+	    noFill();
+	    if (selected == "gender"){
+		    if (isFemale) {
+		    	fill(13, 70, 70, 70)
+		    }
+		}
+		else if (selected == "emotion"){
+			// negative emos
+			if (isAngry || isDisgust || isSad) {
+				fill(0, 70, 70, 70)
+			}
+			// happy
+			else if (isHappy) {
+				fill(30, 70, 70, 70)
+			}
+			// neutral
+			else if (isNeutral) {
+				fill(60, 70, 70, 70)
+			}
+			// other emos
+			else {
+				fill(80, 70, 70, 70)
+			}
+		}
+		rect(x, y, w, h)
 	}
 	if (winner[2] != undefined){
 		drawWinner(winner)
