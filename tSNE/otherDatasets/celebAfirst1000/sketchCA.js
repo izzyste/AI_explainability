@@ -1,4 +1,7 @@
+// SECONDARY SKETCH FOR CELEBA FIRST 1000 IMAGES
+
 let cloudLocations, gridLocations;
+let females, femalesTable;
 let tSNEimages = [];
 let tSNEmode;
 let closestImage, closestDistance, winner;
@@ -13,7 +16,6 @@ let scaleFactor;
 
 let picScale = cWidth/xRows
 
-let femaleNums = [1, 4, 345, 688, 29, 234, 889, 657, 104, 10, 40, 245, 678, 39, 244, 829, 757, 114];
 let selected;
 let scaleSlider;
 let scaleSliderY, scaleSliderX, scaleSliderW;
@@ -26,13 +28,17 @@ let prevPosition = [0,0]
 
 let outlineColor;
 
+let impy, impx
+
 function preload() {
-	cloudLocations = loadJSON('assets/cloudLocationsCelebA.json');
-	gridLocations = loadTable('assets/gridLocationsCelebA.csv');
-	sourceCode = loadFont("assets/SourceCodePro-Regular.ttf")
+	cloudLocations = loadJSON('otherDatasets/celebAfirst1000/assetsCA/cloudLocations.json');
+	gridLocations = loadTable('otherDatasets/celebAfirst1000/assetsCA/gridLocations.csv');
+	sourceCode = loadFont("otherDatasets/celebAfirst1000/assetsCA/SourceCodePro-Regular.ttf")
+	femalesTable = loadTable('otherDatasets/celebAfirst1000/assetsCA/femalesList')
 }
 
 function setup() {
+	console.log("This is the celebA First 1000 sketch")
 	var canvas = createCanvas(cWidth, cHeight);
 	canvas.parent('tSNEp5');
 
@@ -46,6 +52,11 @@ function setup() {
 
 	tSNEmode = "grid"
 	selected = "female"
+	females = femalesTable.getArray();
+	for (let i = 0; i < females.length; i++){
+		females[i] = int(females[i][0])
+	}
+	console.log(females[50], typeof(females[50]))
 
 	getImages();
 
@@ -71,8 +82,8 @@ function getImages(){
 			y = map(float(location.point[1]), 0, 1, 0, height)
 		}
 		else if (tSNEmode == "grid") {
-			x = gridLocations.get(i, 0)
-			y = gridLocations.get(i, 1)
+			x = int(gridLocations.get(i, 0))
+			y = int(gridLocations.get(i, 1))
 			x = map(x, 0, xRows, 0, width)
 			y = map(y, 0, yRows, 0, height)
 		}
@@ -84,11 +95,11 @@ function getImages(){
 	    let filename = location.path
 	    let num = int(filename.slice(0, 6))
 	    
-	    let path = "sampleCelebA/" + str(filename)
+	    let path = "otherDatasets/celebAfirst1000/sampleCA/" + str(filename)
 	    let img = loadImage(path)
 
 	    // is this image on the females list?
-	    if (femaleNums.includes(num)){
+	    if (females.includes(num)){
 	      	isFemale = true;
 	    }
 	    else{
@@ -130,6 +141,11 @@ function draw() {
 		let h = w
 		image(img, x, y, w, h)
 
+		if (num == 111781){
+			fill(0, 60, 60)
+			rect(x, y, w*2, h*2)
+		}
+
 	    // calculate distance from the mouse
 	    let currDistance = distance((mouseX - tx)/scaleFactor, (mouseY - ty)/scaleFactor, x + w/2, y + h/2)
 	    //console.log(["at i = ", i, " distance = ", currDistance])
@@ -159,8 +175,7 @@ function draw() {
 function drawSliderBg(){
 	noStroke();
 	fill(100);
-	console.log(scaleSliderX, scaleSliderY, scaleSliderW)
-	rect(scaleSliderX, scaleSliderY, scaleSliderW, 40)
+	rect(scaleSliderX - 50, scaleSliderY - 375, scaleSliderW*1.5, 40)
 }
 
 // draw tooltip for closest image to mouse

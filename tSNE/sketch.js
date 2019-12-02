@@ -1,4 +1,7 @@
+// MAIN SKETCH FOR FINAL CELEBA SAMPLE
+
 let cloudLocations, gridLocations;
+let females, femalesTable;
 let tSNEimages = [];
 let tSNEmode;
 let closestImage, closestDistance, winner;
@@ -13,7 +16,6 @@ let scaleFactor;
 
 let picScale = cWidth/xRows
 
-let femaleNums = [1, 4, 345, 688, 29, 234, 889, 657, 104, 10, 40, 245, 678, 39, 244, 829, 757, 114];
 let selected;
 let scaleSlider;
 let scaleSliderY, scaleSliderX, scaleSliderW;
@@ -30,9 +32,11 @@ function preload() {
 	cloudLocations = loadJSON('assets/cloudLocations.json');
 	gridLocations = loadTable('assets/gridLocations.csv');
 	sourceCode = loadFont("assets/SourceCodePro-Regular.ttf")
+	femalesTable = loadTable('assets/femalesList')
 }
 
 function setup() {
+	console.log("This is the main file")
 	var canvas = createCanvas(cWidth, cHeight);
 	canvas.parent('tSNEp5');
 
@@ -46,6 +50,10 @@ function setup() {
 
 	tSNEmode = "grid"
 	selected = "female"
+	females = femalesTable.getArray();
+	for (let i = 0; i < females.length; i++){
+		females[i] = int(females[i][0])
+	}
 
 	getImages();
 
@@ -71,10 +79,9 @@ function getImages(){
 			y = map(float(location.point[1]), 0, 1, 0, height)
 		}
 		else if (tSNEmode == "grid") {
-			let evilCSV = (gridLocations.get(i, 0)).split(";")
-			console.log(evilCSV)
-			x = float(evilCSV[0])
-			y = float(evilCSV[1])
+			let pos = (gridLocations.get(i, 0)).split(";")
+			x = float(pos[0])
+			y = float(pos[1])
 			x = map(x, 0, xRows, 0, width)
 			y = map(y, 0, yRows, 0, height)
 		}
@@ -87,11 +94,10 @@ function getImages(){
 	    let num = int(filename.slice(0, 6))
 	    
 	    let path = "sample/" + str(filename)
-	    console.log(path)
 	    let img = loadImage(path)
 
-	    // is this image on the females list?
-	    if (femaleNums.includes(num)){
+	    // is this image in the females object?
+	    if (females.includes(num)){
 	      	isFemale = true;
 	    }
 	    else{
@@ -147,7 +153,7 @@ function draw() {
 	    // if in females list and mode is female, draw overlay
 	    if (isFemale && selected == "female") {
 	    	noStroke();
-	    	fill(13, 70, 70, 80)
+	    	fill(13, 70, 70, 70)
 	    	rect(x, y, w, h)
 	    }
 	}
